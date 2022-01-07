@@ -4,7 +4,7 @@
 #
 Name     : pypi-gensim
 Version  : 4.1.2
-Release  : 66
+Release  : 67
 URL      : https://files.pythonhosted.org/packages/4b/6d/22a9a2b934344fbf25ab2613543eeeb724ffd3ba7376e8fed88aabe885c8/gensim-4.1.2.tar.gz
 Source0  : https://files.pythonhosted.org/packages/4b/6d/22a9a2b934344fbf25ab2613543eeeb724ffd3ba7376e8fed88aabe885c8/gensim-4.1.2.tar.gz
 Summary  : Python framework for fast Vector Space Modelling
@@ -13,8 +13,8 @@ License  : LGPL-2.1 LGPL-2.1-only
 Requires: pypi-gensim-license = %{version}-%{release}
 Requires: pypi-gensim-python = %{version}-%{release}
 Requires: pypi-gensim-python3 = %{version}-%{release}
-BuildRequires : Cython
 BuildRequires : buildreq-distutils3
+BuildRequires : pypi(cython)
 BuildRequires : pypi(dataclasses)
 BuildRequires : pypi(numpy)
 BuildRequires : pypi(scipy)
@@ -70,7 +70,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1641583953
+export SOURCE_DATE_EPOCH=1641586025
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
