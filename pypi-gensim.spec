@@ -4,12 +4,14 @@
 #
 Name     : pypi-gensim
 Version  : 4.2.0
-Release  : 68
+Release  : 69
 URL      : https://files.pythonhosted.org/packages/24/97/2197f018ee9f8ce2f071b2d9c6711c76159aead710f8d24a2bf006082a28/gensim-4.2.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/24/97/2197f018ee9f8ce2f071b2d9c6711c76159aead710f8d24a2bf006082a28/gensim-4.2.0.tar.gz
 Summary  : Python framework for fast Vector Space Modelling
 Group    : Development/Tools
 License  : LGPL-2.1 LGPL-2.1-only
+Requires: pypi-gensim-filemap = %{version}-%{release}
+Requires: pypi-gensim-lib = %{version}-%{release}
 Requires: pypi-gensim-license = %{version}-%{release}
 Requires: pypi-gensim-python = %{version}-%{release}
 Requires: pypi-gensim-python3 = %{version}-%{release}
@@ -27,6 +29,24 @@ The following image URLs are obfuscated = proxied and cached through
 Google because of Github's proxying issues. See:
 https://github.com/RaRe-Technologies/gensim/issues/2805
 -->
+
+%package filemap
+Summary: filemap components for the pypi-gensim package.
+Group: Default
+
+%description filemap
+filemap components for the pypi-gensim package.
+
+
+%package lib
+Summary: lib components for the pypi-gensim package.
+Group: Libraries
+Requires: pypi-gensim-license = %{version}-%{release}
+Requires: pypi-gensim-filemap = %{version}-%{release}
+
+%description lib
+lib components for the pypi-gensim package.
+
 
 %package license
 Summary: license components for the pypi-gensim package.
@@ -48,6 +68,7 @@ python components for the pypi-gensim package.
 %package python3
 Summary: python3 components for the pypi-gensim package.
 Group: Default
+Requires: pypi-gensim-filemap = %{version}-%{release}
 Requires: python3-core
 Provides: pypi(gensim)
 Requires: pypi(numpy)
@@ -61,13 +82,16 @@ python3 components for the pypi-gensim package.
 %prep
 %setup -q -n gensim-4.2.0
 cd %{_builddir}/gensim-4.2.0
+pushd ..
+cp -a gensim-4.2.0 buildavx2
+popd
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1651591170
+export SOURCE_DATE_EPOCH=1653332220
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -79,6 +103,15 @@ export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto "
 export MAKEFLAGS=%{?_smp_mflags}
 python3 setup.py build
 
+pushd ../buildavx2/
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
+python3 setup.py build
+
+popd
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
@@ -88,9 +121,26 @@ python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
 echo ----[ mark ]----
+pushd ../buildavx2/
+export CFLAGS="$CFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export CXXFLAGS="$CXXFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FFLAGS="$FFLAGS -m64 -march=x86-64-v3 -Wl,-z,x86-64-v3 "
+export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
+export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
+python3 -tt setup.py build install --root=%{buildroot}-v3
+popd
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
+
+%files filemap
+%defattr(-,root,root,-)
+/usr/share/clear/filemap/filemap-pypi-gensim
+
+%files lib
+%defattr(-,root,root,-)
+/usr/share/clear/optimized-elf/other*
 
 %files license
 %defattr(0644,root,root,0755)
