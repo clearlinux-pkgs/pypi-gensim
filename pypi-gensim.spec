@@ -4,7 +4,7 @@
 #
 Name     : pypi-gensim
 Version  : 4.2.0
-Release  : 70
+Release  : 71
 URL      : https://files.pythonhosted.org/packages/24/97/2197f018ee9f8ce2f071b2d9c6711c76159aead710f8d24a2bf006082a28/gensim-4.2.0.tar.gz
 Source0  : https://files.pythonhosted.org/packages/24/97/2197f018ee9f8ce2f071b2d9c6711c76159aead710f8d24a2bf006082a28/gensim-4.2.0.tar.gz
 Summary  : Python framework for fast Vector Space Modelling
@@ -91,7 +91,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1656378018
+export SOURCE_DATE_EPOCH=1656403900
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
